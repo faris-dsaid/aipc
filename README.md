@@ -1,2 +1,0 @@
-# aipc
-Automating Infrastructure Course
