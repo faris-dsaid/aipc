@@ -64,13 +64,8 @@ output dov-bear-md5 {
     description = "SHA of the image"
 }
 
-
-# resource "digitalocean_droplet" "example" {
-#   image    = "ubuntu-18-04-x64"
-#   name     = "example-1"
-#   region   = "nyc2"
-#   size     = "s-1vcpu-1gb"
-#   ssh_keys = [data.digitalocean_ssh_key.example.id]
+# output container_ports{
+#     value = docker_container.dov-bear-container.ports[*].ports[0].external
 # }
 
 resource digitalocean_droplet nginx {

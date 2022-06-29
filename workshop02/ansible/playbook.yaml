@@ -1,0 +1,63 @@
+- name: Code Server Installation
+  hosts: all
+  vars:
+    packages:
+      - certbot 
+      - python3-certbot-nginx
+  tasks:
+  - name: Create Directory ~/code-server
+    file:
+      path: ~/code-server
+      state: directory
+      mode: '0755'
+  - name: Go to the folder and execute command to wget code-server
+    command: chdir=~/code-server wget https://github.com/cdr/code-server/releases/download/v3.3.1/code-server-3.3.1-linux-amd64.tar.gz
+  - name: Unarchive a code-server tar that is already on the remote machine
+    ansible.builtin.unarchive:
+      src: ~/code-server/code-server-3.3.1-linux-amd64.tar.gz
+      dest: ~/code-server/
+      remote_src: yes
+  - name: Copy file code-server-3.3.1-linux-amd64 to /usr/lib/code-server
+    command: sudo cp -r ~/code-server/code-server-3.3.1-linux-amd64 /usr/lib/code-server
+  - name: Create a symbolic link between /usr/lib/code-server/bin/code-server and /usr/bin/code-server
+    become: true
+    ansible.builtin.file:
+      src: /usr/lib/code-server/bin/code-server
+      dest: /usr/bin/code-server
+      state: link
+  - name: Create Directory/var/lib/code-server
+    file:
+      path: /var/lib/code-server
+      state: directory
+      mode: '0755'
+  - name: Copying the Directory's contents (sub directories/files)
+    become: true 
+    copy:
+      src: /home/fred/aipc/workshop02/ansible/code-server.service
+      dest: /lib/systemd/system/
+  - name: Start codeserver
+    command: sudo systemctl start code-server
+  - name: Enable codeserver
+    command: sudo systemctl enable code-server
+  - name: Copying the code-server.conf over
+    become: true 
+    copy:
+      src: /home/fred/aipc/workshop02/ansible/code-server.conf
+      dest: /etc/nginx/sites-available/
+  - name: Create a symbolic link between /usr/lib/code-server/bin/code-server and /usr/bin/code-server
+    become: true
+    ansible.builtin.file:
+      src: /etc/nginx/sites-available/code-server.conf 
+      dest: /etc/nginx/sites-enabled/code-server.conf
+      state: link
+  - name: Restart nginx
+    command: sudo systemctl restart nginx
+  - name: Install Certbot
+    apt: 
+      update_cache: yes
+      name: "{{ packages }}"
+      state: latest
+  - name: Open https firewall
+    command: sudo ufw allow https
+  - name: Open https firewall
+    command: sudo ufw reload

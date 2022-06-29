@@ -1,0 +1,33 @@
+- name: Basic server test
+  hosts: all
+  vars:
+    packages:
+      - nginx
+      - mysql-server
+  tasks:
+  - name: Check server connectivity 
+    ping:
+  - name: Print server ip address
+    debug: 
+      msg: "The current ip address is {{ ansible_host }}"
+  - name: Install Nginx
+    apt: 
+      update_cache: yes
+      name: "{{ item }}"
+      state: latest
+    register: updated
+    loop: "{{ packages }}"
+  - name: Enable nginx
+    systemd: 
+      name: nginx
+      state: started
+      enabled: yes
+  - name: list all files in /etc
+    find: 
+      paths: /etc
+      recurse: yes
+    register: etc_files
+  - name: list output from previous tasks
+    debug:
+      msg: "File name {{ item.path }}: {{ item.mode }}"
+    loop: "{{ etc_files.files }}"
