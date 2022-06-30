@@ -1,0 +1,29 @@
+- name: Code Server Installation
+  hosts: all
+  vars:
+    packages:
+      - certbot 
+      - python3-certbot-nginx
+  tasks:
+  - name: Copying the code-server.conf over
+    become: true 
+    copy:
+      src: /home/fred/aipc/workshop03/ansible/code-server.conf
+      dest: /etc/nginx/sites-available/
+  - name: Create a symbolic link between /usr/lib/code-server/bin/code-server and /usr/bin/code-server
+    become: true
+    ansible.builtin.file:
+      src: /etc/nginx/sites-available/code-server.conf 
+      dest: /etc/nginx/sites-enabled/code-server.conf
+      state: link
+  - name: Restart nginx
+    command: sudo systemctl restart nginx
+  - name: Install Certbot
+    apt: 
+      update_cache: yes
+      name: "{{ packages }}"
+      state: latest
+  - name: Open https firewall
+    command: sudo ufw allow https
+  - name: Open https firewall
+    command: sudo ufw reload

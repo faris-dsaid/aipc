@@ -358,3 +358,9 @@ MigrationBackup/
 # aipic public key
 aipc.pub
 
+# Ignore code server config
+code-server.conf
+code-server.service
+
+# Ignore pkr
+variables.pkrvars.hcl

@@ -1,7 +1,7 @@
 all:
   hosts:
     server-0:
-      ansible_host: 128.199.245.141
+      ansible_host: ${nginx_ip}
   vars:
     ansible_connection: ssh
     ansible_user: root
