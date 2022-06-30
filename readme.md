@@ -1,8 +1,6 @@
-# aipc
-Automating Infrastructure Course
-Pre-Course Submission
+# Automating Infrastructure & Provisioning Course
 
-# Terraform
+## Terraform
 ```
 terraform init
 terraform plan
@@ -10,12 +8,12 @@ terraform apply
 terraform destroy
 ```
 
-# Ansible
+## Ansible
 ```
 sudo ansible-playbook -i inventory.yaml playbook.yaml
 ```
 
-# Packer
+## Packer
 ```
 packer init config.pkr.hcl
 packer build -var-file=variables.pkrvars.hcl images.pkr.hcl
